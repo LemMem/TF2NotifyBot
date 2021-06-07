@@ -1,4 +1,4 @@
-#TF2 Notify Bot
+# TF2 Notify Bot
 A simple discord bot that sends a message when a Comp TF2 Stream goes live.
 
 ## Running
