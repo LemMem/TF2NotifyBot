@@ -1,10 +1,29 @@
 import * as Discord from 'discord.js';
 import * as Config from './config.json';
 import * as DBWrapper from './db-wrapper';
+import * as Axios from 'axios';
+const channels: string[] = [
+	'rglgg',
+	'kritzkast',
+	'cappingtv',
+	'cappingtv2',
+	'teamfortresstv',
+	'teamfortresstv2',
+	'teamfortresstv3',
+	'essentialstf'
+]; //Feel free to PR for more channels
+const previousChannelStatus: boolean[] = [
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false,
+	false
+]
 
 const client: Discord.Client = new Discord.Client();
-let commands = new Discord.Collection();
-
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -31,4 +50,17 @@ client.on('message', message => {
   }
 });
 
-client.login(Config.token);
+function pollStreamStatus() {
+	for (let i = 0; i < channels.length; i++) {
+		const userToPoll = channels[i];
+		const headers = {
+        'Client-ID': Config.twitch,
+        'Accept':    'application/vnd.twitchtv.v5+json'
+    };
+		Axios.default(`https://api.twitch.tv/kraken/streams?${userToPoll}`, {headers: headers}).then(response => {
+
+		}).catch(console.error)
+	}
+}
+
+pollStreamStatus();
