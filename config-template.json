@@ -2,4 +2,6 @@
   "token": "",
   "prefix": "\\",
   "mongo": "",
+  "delay": 10,
+  "twitch": ""
 }
