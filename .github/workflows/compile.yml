@@ -30,6 +30,13 @@ jobs:
         with:
           node-version: '14'
       
+      # Copy Config
+      - name: Configure
+        uses: canastro/copy-file-action@master
+        with: 
+          source: "config-template.json"
+          target: "config.json"
+      
       # Install Dependancies
       - name: Install
         run: npm i
