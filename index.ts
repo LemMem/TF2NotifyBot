@@ -10,7 +10,7 @@ const channels: string[] = [
 	'teamfortresstv',
 	'teamfortresstv2',
 	'teamfortresstv3',
-	'essentialstf'
+	'essentialstf',
 ]; //Feel free to PR for more channels
 const previousChannelStatus: boolean[] = [
 	false,
@@ -22,6 +22,28 @@ const previousChannelStatus: boolean[] = [
 	false,
 	false
 ]
+
+async function isChannelLive(id: number) {
+	const userToPoll = channels[id];
+	const headers = {
+			'Client-ID': Config.twitch,
+			'Accept':    'application/vnd.twitchtv.v5+json'
+	};
+	const channel = await Axios.default(`https://api.twitch.tv/kraken/users?login=${userToPoll}`, {headers: headers});
+	const channelID = channel.data.users[0]._id;
+	const streamObject = await Axios.default(`https://api.twitch.tv/kraken/streams?channel=${channelID}`, {headers: headers});
+	if(streamObject.data.streams.length === 0) return false;
+	const streamStatus = streamObject.data.streams[0].stream_type;
+	if (streamStatus === 'live') return true;
+	else return false;
+
+}
+
+async function pollAllChannels() {
+	for (let i = 0; i < channels.length; i++) {
+		previousChannelStatus[i] = await isChannelLive(i);
+	}
+}
 
 const client: Discord.Client = new Discord.Client();
 client.once('ready', () => {
@@ -50,17 +72,8 @@ client.on('message', message => {
   }
 });
 
-function pollStreamStatus() {
-	for (let i = 0; i < channels.length; i++) {
-		const userToPoll = channels[i];
-		const headers = {
-        'Client-ID': Config.twitch,
-        'Accept':    'application/vnd.twitchtv.v5+json'
-    };
-		Axios.default(`https://api.twitch.tv/kraken/streams?${userToPoll}`, {headers: headers}).then(response => {
+async function sendMessagesFromPoll() {
 
-		}).catch(console.error)
-	}
 }
 
-pollStreamStatus();
+//client.login(Config.token);

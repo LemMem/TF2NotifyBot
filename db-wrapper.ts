@@ -11,7 +11,7 @@ export function BindToChannel(channel: string, guild: string) {
     client.connect(function(err) {
         assert.strictEqual(null, err);
         console.log(`Binding to channel ${channel} for guild ${guild}.`)
-    
+
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
@@ -34,4 +34,19 @@ export function BindToChannel(channel: string, guild: string) {
             return;
         })
     });
+}
+
+export function GetChannelsAndGuilds() {
+  let toSend = new Map();
+  const client = new Mongo.MongoClient(url);
+  client.connect(function(err) {
+    assert.strictEqual(null, err);
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
+
+    let cursor = collection.find();
+    cursor.forEach((doc) => {
+      
+    });
+  });
 }
