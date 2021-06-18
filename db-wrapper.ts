@@ -6,24 +6,22 @@ const url = Config.mongo;
 const dbName = 'tfnotify';
 const collectionName = 'bound';
 
-export function BindToChannel(channel: string, guild: string) {
+export function BindToChannel(channel: string) {
     const client = new Mongo.MongoClient(url);
     client.connect(function(err) {
         assert.strictEqual(null, err);
-        console.log(`Binding to channel ${channel} for guild ${guild}.`)
+        console.log(`Binding to channel ${channel}.`)
 
         const db = client.db(dbName);
         const collection = db.collection(collectionName);
 
-        collection.findOne({guildID: guild}).then(function(value){
+        collection.findOne({channelID: channel}).then(function(value){
             if(value) {
-                collection.replaceOne({guildID: guild}, {
-                    guildID: guild,
+                collection.replaceOne({channelID: channel}, {
                     channelID: channel,
                 });
             } else {
                 collection.insertOne({
-                    guildID: guild,
                     channelID: channel,
                 });
             }
@@ -36,8 +34,8 @@ export function BindToChannel(channel: string, guild: string) {
     });
 }
 
-export function GetChannelsAndGuilds() {
-  let toSend = new Map();
+export function GetChannels() {
+  let toSend: any[] = [];
   const client = new Mongo.MongoClient(url);
   client.connect(function(err) {
     assert.strictEqual(null, err);
@@ -46,7 +44,8 @@ export function GetChannelsAndGuilds() {
 
     let cursor = collection.find();
     cursor.forEach((doc) => {
-      
+      toSend.push(doc);
     });
   });
+  return toSend;
 }

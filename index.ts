@@ -61,9 +61,8 @@ client.on('message', message => {
       if (!args.length) {message.channel.send('You must provide the ID for the channel you wish to bind the bot to.'); break;}
       if(!message.member.permissions.has('ADMINISTRATOR')) {message.channel.send('You must have the Admin permission to bind the bot to a channel!'); break;}
       message.channel.send('Binding bot to that channel...');
-      const guildID: string = message.guild.id;
       const channelID: string = args[0];
-      DBWrapper.BindToChannel(channelID, guildID);
+      DBWrapper.BindToChannel(channelID);
       message.channel.send('Done!');
       break;
     default:
@@ -73,7 +72,20 @@ client.on('message', message => {
 });
 
 async function sendMessagesFromPoll() {
-
+	let currentChannelStatus: boolean[] = previousChannelStatus.concat([]);
+	await pollAllChannels();
+	for (let i = 0; i < channels.length; i++) {
+		if (currentChannelStatus[i] != previousChannelStatus[i] && previousChannelStatus[i] === true) {sendMessageForChannel(i);}
+	}
 }
 
-//client.login(Config.token);
+async function sendMessageForChannel(channel: number) {
+	let channelsToSendTo = DBWrapper.GetChannels();
+	channelsToSendTo.forEach(async (channel) => {
+		let channelToSend = await client.channels.fetch(channel.channelID);
+		if(channelToSend.type === "text") {
+		}
+	});
+}
+
+client.login(Config.token);
