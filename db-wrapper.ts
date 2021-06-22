@@ -44,7 +44,7 @@ export function GetChannels() {
 
     let cursor = collection.find();
     cursor.forEach((doc) => {
-      toSend.push(doc);
+      toSend.push(doc.channelID);
     });
   });
   return toSend;

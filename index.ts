@@ -12,7 +12,7 @@ const channels: string[] = [
 	'teamfortresstv3',
 	'essentialstf',
 ]; //Feel free to PR for more channels
-const previousChannelStatus: boolean[] = [
+const previousTwitchChannelStatus: boolean[] = [
 	false,
 	false,
 	false,
@@ -41,7 +41,7 @@ async function isChannelLive(id: number) {
 
 async function pollAllChannels() {
 	for (let i = 0; i < channels.length; i++) {
-		previousChannelStatus[i] = await isChannelLive(i);
+		previousTwitchChannelStatus[i] = await isChannelLive(i);
 	}
 }
 
@@ -72,19 +72,22 @@ client.on('message', message => {
 });
 
 async function sendMessagesFromPoll() {
-	let currentChannelStatus: boolean[] = previousChannelStatus.concat([]);
+	let currentTwitchChannelStatus: boolean[] = previousTwitchChannelStatus.concat([]);
 	await pollAllChannels();
+	let discordChannelsToSendTo = DBWrapper.GetChannels();
 	for (let i = 0; i < channels.length; i++) {
-		if (currentChannelStatus[i] != previousChannelStatus[i] && previousChannelStatus[i] === true) {sendMessageForChannel(i);}
+		if (currentTwitchChannelStatus[i] != previousTwitchChannelStatus[i] && previousTwitchChannelStatus[i] === true) {sendMessageForChannel(i, discordChannelsToSendTo);}
 	}
 }
 
-async function sendMessageForChannel(channel: number) {
-	let channelsToSendTo = DBWrapper.GetChannels();
-	channelsToSendTo.forEach(async (channel) => {
-		let channelToSend = await client.channels.fetch(channel.channelID);
-		if(channelToSend.type === "text") {
-		}
+function generateMessage(channel: number) {
+	return "";
+}
+
+async function sendMessageForChannel(twitchChannel: number, discordChannelsToSendTo: any[]) {
+
+	discordChannelsToSendTo.forEach(discordChannel => {
+		
 	});
 }
 
